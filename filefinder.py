@@ -6,8 +6,9 @@ import argumentparser as ap
 
 
 class FileFinder :
-	def __init__(self, argumentParser) :
-		self.argumentParser = argumentParser
+	def __init__(self, system) :
+		self.system			= system
+		self.argumentParser = system.argumentParser
 		self.trainingDir 	= 'TrainingData'
 
 		# If the program was called with a --load flag but no file name, the 

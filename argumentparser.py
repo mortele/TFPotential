@@ -1,7 +1,8 @@
 import argparse as arg
 
 class ArgumentParser :
-	def __init__(self) :
+	def __init__(self, system) :
+		self.system = system
 		description = 'Fit potential energy surfaces using tensorflow neural networks.'
 		self.parser = arg.ArgumentParser(description=description)
 		self.parser.add_argument('epochs', help='The number of training epochs',
@@ -24,7 +25,6 @@ class ArgumentParser :
 		return self.args
 
 	def nLayers(self) :
-		print self().size
 		if self().size != None and self().size != False :
 			return self().size[0]
 		else :

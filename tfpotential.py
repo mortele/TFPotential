@@ -5,28 +5,29 @@ import datetime 			as 	time
 import argumentparser 		as 	ap
 import filefinder			as  ff
 import neuralnetwork	 	as  nn
-
+import networktrainer		as  nt
 
 
 class TFPotential :
 	def __init__(self) :
-		self.argumentParser = ap.ArgumentParser()
-		self.filefinder 	= ff.FileFinder(self.argumentParser)
-		self.network 		= nn.NeuralNetwork()
-
-		self.nLayers 	 = self.argumentParser.nLayers()
-		self.nNodes  	 = self.argumentParser.nNodes()
-		self.networkType = self.argumentParser.type()
-
-		self.network.constructNetwork(inputs		= 1, 
+		self.argumentParser = ap.ArgumentParser(self)
+		self.filefinder 	= ff.FileFinder(self)
+		self.inputs		 	= 1
+		self.nLayers 	 	= self.argumentParser.nLayers()
+		self.nNodes  	 	= self.argumentParser.nNodes()
+		self.outputs 	 	= 1
+		self.networkType 	= self.argumentParser.type()
+		self.network 		= nn.NeuralNetwork(self)
+		self.network.constructNetwork(inputs		= self.inputs, 
 						 			  nNodes		= self.nNodes,
 						 			  nLayers		= self.nLayers, 
-						 			  outputs		= 1, 
+						 			  outputs		= self.outputs, 
 						 			  networkType	= None) 
+		self.networkTrainer = nt.NetworkTrainer(self)
+		
 
-
-	def __call__(self) :
-		pass
+	def __call__(self, inputData) :
+		return self.network(inputData)
 
 
 tfpot = TFPotential()

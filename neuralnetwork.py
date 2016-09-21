@@ -4,8 +4,11 @@ import numpy 		as 	np
 
 
 class NeuralNetwork :
-	def __init__(self) :
-		pass
+	def __init__(self, system) :
+		self.system  = system
+		self.network = None
+		self.hiddenActivation 	= tf.nn.sigmoid
+		self.lastActivation 	= tf.nn.sigmoid
 
 	def initializeWeights(self, 
 						  shape, 
@@ -29,51 +32,51 @@ class NeuralNetwork :
 
 		if networkType == 'relu-sigmoid' :
 			self.hiddenActivation 	= tf.nn.relu
-			self.lastActivationa 	= tf.nn.sigmoid
-		elif networkType == 'sigmoid' or networkType == None:
+			self.lastActivation 	= tf.nn.sigmoid
+		elif networkType == 'sigmoid' :
 			self.hiddenActivation	= tf.nn.sigmoid
-			self.lastActivationa	= tf.nn.sigmoid
+			self.lastActivation		= tf.nn.sigmoid
 		elif networkType == 'relu' :
 			self.hiddenActivation 	= tf.nn.relu
-			self.lastActivationa 	= tf.nn.relu
+			self.lastActivation  	= tf.nn.relu
 
-		self.network = lambda inputData : self.networkSigmoid(
+		self.network = lambda inputData : self.fullNetwork(
 									inputData,
 									inputs  		 = self.inputs,
 									nLayers 		 = self.nLayers,
 									nNodes  		 = self.nNodes,
 									outputs 		 = self.outputs,
 									hiddenActivation = self.hiddenActivation,
-									lastActivationa  = self.lastActivationa) 
+									lastActivation   = self.lastActivation) 
 
 	def __call__(self, inputData) :
 		return self.network(inputData)
 
-	def network(self,
-				inputData,
-				inputs,
-				nLayers,
-				nNodes,
-				outputs,
-				hiddenActivation,
-				lastActivationa) :
+	def fullNetwork(self,
+					inputData,
+					inputs,
+					nLayers,
+					nNodes,
+					outputs,
+					hiddenActivation,
+					lastActivation) :
 		w, b = [], []
-		w.append(initializeWeights([inputs, nNodes], 0, 'w'))
-		b.append(initializeWeights([inputs], 		 0, 'b'))
-		y_ = tf.hiddenActivation(tf.add(tf.matmul(inputData, w[0]), b[0]))
+		w.append(self.initializeWeights([inputs, nNodes], 0, 'w'))
+		b.append(self.initializeWeights([inputs], 		  0, 'b'))
+		y_ = self.hiddenActivation(tf.add(tf.matmul(inputData, w[0]), b[0]))
 
 		for layer in range(1, nLayers-1) :
-			w.append(initializeWeights([nNodes, nNodes], layer, 'w'))
-			b.append(initializeWeights([nNodes], 		 layer, 'b'))
-			y_ = tf.hiddenActivation(tf.add(tf.matmul(y_, w[layer]), b[layer]))
+			w.append(self.initializeWeights([nNodes, nNodes], layer, 'w'))
+			b.append(self.initializeWeights([nNodes], 		  layer, 'b'))
+			y_ = self.hiddenActivation(tf.add(tf.matmul(y_, w[layer]), b[layer]))
 
-		w.append(initializeWeights([nNodes, outputs], nLayers, 'w'))
-		b.append(initializeWeights([outputs], 		  nLayers, 'b'))
-		y_ = tf.lastActivationa(tf.add(tf.matmul(y_, w[nLayers]), b[nLayers]))		
+		w.append(self.initializeWeights([nNodes, nNodes], nLayers-1, 'w'))
+		b.append(self.initializeWeights([nNodes], 		  nLayers-1, 'b'))
+		y_ = self.lastActivation(tf.add(tf.matmul(y_, w[nLayers-1]), b[nLayers-1]))
 
-		w.append(initializeWeights([nNodes, outputs], nLayers+1, 'w'))
-		b.append(initializeWeights([outputs], 		  nLayers+1, 'b'))
-		return tf.add(tf.matmul(y_, w[nLayers+1]), b[nLayers+1])
+		w.append(self.initializeWeights([nNodes, outputs], nLayers, 'w'))
+		b.append(self.initializeWeights([outputs], 		   nLayers, 'b'))
+		return tf.add(tf.matmul(y_, w[nLayers]), b[nLayers])
 
 
 
