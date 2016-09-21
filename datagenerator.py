@@ -6,11 +6,11 @@ class DataGenerator :
 		self.a = a
 		self.b = b
 
-	def setFunction(self, f) :
+	def setFunction(self, function) :
 		self.function = function
 
 	def generateData(self, n) :
-		x = np.random.uniform(self.a, self.b, numberOfSamples)
-		x = x.reshape([numberOfSamples, 1])
+		x = np.random.uniform(self.a, self.b, n)
+		x = x.reshape([n, 1])
 		y = self.function(x)
 		return x, y

@@ -18,28 +18,28 @@ class NetworkTrainer :
 	def trainNetwork(self, numberOfEpochs) :
 		with tf.Session() as sess :
 			sess.run(tf.initialize_all_variables())
+			xEpoch, yEpoch 	= self.system.dataGenerator.generateData(self.system.dataSize)
+			numberOfEpochs 	= self.system.numberOfEpochs
+			dataSize		= self.system.dataSize
+			batchSize 		= self.system.batchSize
 
-			xEpoch, yEpoch 	= system.dataGenerator.generateData(system.dataSize)
-			numberOfEpochs 	= system.numberOfEpochs
-			dataSize		= system.dataSize
-			batchSize 		= system.batchSize
+			for epoch in xrange(numberOfEpochs) :
 
-			
-			for epoch in range(numberOfEpochs) :
 				epochLoss = 0
-				
-				for i in range(dataSize / batchSize) :
+				for i in xrange(dataSize / batchSize) :
+
 					startIndex 	= i*batchSize
 					endIndex	= startIndex + batchSize
 					xBatch 		= xEpoch[startIndex:endIndex]
 					yBatch 		= yEpoch[startIndex:endIndex]
-					bOpt, bCost = sess.run([optimizer, cost], 
-										   feed_dict={x: xBatch, y: yBatch})
+					bOpt, bCost = sess.run([self.optimizer, self.cost], 
+										   feed_dict={self.x: xBatch, self.y: yBatch})
 					epochLoss += bCost
-				print "bCost=", bCost
 
-				if epoch % system.testInterval == 0 :
-					tOpt, tCost = sess.run([optimizer, cost], 
-										   feed_dict={x: xEpoch, y: yEpoch})
-					print "tCost=", tCost
+				if epoch % self.system.testInterval == 0 :
+					tOpt, tCost = sess.run([self.optimizer, self.cost], 
+										   feed_dict={self.x: xEpoch, self.y: yEpoch})
+					print "eCost=", epochLoss, "     tCost=", tCost
+				else :
+					print "eCost=", epochLoss
 

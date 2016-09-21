@@ -1,3 +1,4 @@
+import sys
 import tensorflow 			as 	tf
 import numpy 				as 	np
 import matplotlib.pyplot 	as 	plt
@@ -6,7 +7,7 @@ import argumentparser 		as 	ap
 import filefinder			as  ff
 import neuralnetwork	 	as  nn
 import networktrainer		as  nt
-import dataGenerator 		as  gen
+import datagenerator 		as  gen
 
 
 class TFPotential :
@@ -28,7 +29,7 @@ class TFPotential :
 		self.function		= lambda r: 1/r**6 * (1/r**6 - 1)
 		self.dataGenerator	= gen.DataGenerator(0.87, 1.6)
 		self.dataGenerator.setFunction(self.function)
-		self.numberOfEpochs = sys.maxint
+		self.numberOfEpochs = int(1e10)
 		self.dataSize  		= int(1e7)
 		self.batchSize		= int(1e5)
 		self.testSize		= int(1e7)
@@ -37,5 +38,11 @@ class TFPotential :
 	def __call__(self, inputData) :
 		return self.network(inputData)
 
+	def train(self, epochs=-1) :
+		numberOfEpochs = self.numberOfEpochs if epochs == -1 else epochs
+		self.networkTrainer.trainNetwork(numberOfEpochs)
+
+
 
 tfpot = TFPotential()
+tfpot.train()
