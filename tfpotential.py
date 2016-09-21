@@ -14,8 +14,19 @@ class TFPotential :
 		self.filefinder 	= ff.FileFinder(self.argumentParser)
 		self.network 		= nn.NeuralNetwork()
 
+		self.nLayers 	 = self.argumentParser.nLayers()
+		self.nNodes  	 = self.argumentParser.nNodes()
+		self.networkType = self.argumentParser.type()
+
+		self.network.constructNetwork(inputs		= 1, 
+						 			  nNodes		= self.nNodes,
+						 			  nLayers		= self.nLayers, 
+						 			  outputs		= 1, 
+						 			  networkType	= None) 
+
+
 	def __call__(self) :
-		return self.argumentParser()
+		pass
 
 
 tfpot = TFPotential()
