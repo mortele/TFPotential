@@ -14,7 +14,8 @@ class NeuralNetwork :
 						  shape, 
 						  layer, 
 						  name) :
-		return tf.Variable(tf.zeros(shape), name=name+'%d' % (layer))
+		return tf.Variable(tf.random_normal(shape), stddev=np.sqrt(2),
+						   name=name+'%d' % (layer))
 
 	def constructNetwork(self, 
 						 inputs, 
@@ -29,16 +30,7 @@ class NeuralNetwork :
 		self.outputs	 = outputs
 		self.x			 = tf.placeholder('float', [None, inputs],  name='x')
 		self.y			 = tf.placeholder('float', [None, outputs], name='y')
-
-		if networkType == 'relu-sigmoid' :
-			self.hiddenActivation 	= tf.nn.relu
-			self.lastActivation 	= tf.nn.sigmoid
-		elif networkType == 'sigmoid' :
-			self.hiddenActivation	= tf.nn.sigmoid
-			self.lastActivation		= tf.nn.sigmoid
-		elif networkType == 'relu' :
-			self.hiddenActivation 	= tf.nn.relu
-			self.lastActivation  	= tf.nn.relu
+		self.parseTypeString(networkType)
 
 		self.network = lambda inputData : self.fullNetwork(
 									inputData,
@@ -48,6 +40,17 @@ class NeuralNetwork :
 									outputs 		 = self.outputs,
 									hiddenActivation = self.hiddenActivation,
 									lastActivation   = self.lastActivation) 
+
+	def parseTypeString(self, networkType) :
+		if networkType == 'relu-sigmoid' :
+			self.hiddenActivation 	= tf.nn.relu
+			self.lastActivation 	= tf.nn.sigmoid
+		elif networkType == 'sigmoid' :
+			self.hiddenActivation	= tf.nn.sigmoid
+			self.lastActivation		= tf.nn.sigmoid
+		elif networkType == 'relu' :
+			self.hiddenActivation 	= tf.nn.relu
+			self.lastActivation  	= tf.nn.relu
 
 	def __call__(self, inputData) :
 		return self.network(inputData)

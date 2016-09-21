@@ -42,7 +42,12 @@ class TFPotential :
 		numberOfEpochs = self.numberOfEpochs if epochs == -1 else epochs
 		self.networkTrainer.trainNetwork(numberOfEpochs)
 
+	def setNetworkType(self, typeString) :
+		self.network.parseTypeString(typeString)
 
 
-tfpot = TFPotential()
-tfpot.train()
+if __name__ == "__main__" :
+	tfpot = TFPotential()
+	tfpot.setNetworkType('relu-sigmoid')
+	tfpot.train(10)
+	print tfpot(tfpot.dataGenerator.generateData(10))
