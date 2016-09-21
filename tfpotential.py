@@ -1,13 +1,15 @@
 import sys
+import printer
 import tensorflow 			as 	tf
 import numpy 				as 	np
 import matplotlib.pyplot 	as 	plt
-import datetime 			as 	time
-import argumentparser 		as 	ap
+import datetime				as 	time
+import argumentparser		as 	ap
 import filefinder			as  ff
-import neuralnetwork	 	as  nn
+import neuralnetwork		as  nn
 import networktrainer		as  nt
 import datagenerator 		as  gen
+
 
 
 class TFPotential :
@@ -34,13 +36,20 @@ class TFPotential :
 		self.batchSize		= int(1e5)
 		self.testSize		= int(1e7)
 		self.testInterval	= 10
+		self.printer		= printer.Printer(self)
+		self.printer.printSetup()
 
-	def __call__(self, inputData) :
-		return self.network(inputData)
+	def __call__(self, inputData, expectedOutput=None) :
+		if expectedOutput == None :
+			expectedOutput = inputData
+		return self.sess.run(self.networkTrainer.prediction, 
+							 feed_dict={self.networkTrainer.x : inputData,
+									    self.networkTrainer.y : expectedOutput})
 
 	def train(self, epochs=-1) :
 		numberOfEpochs = self.numberOfEpochs if epochs == -1 else epochs
 		self.networkTrainer.trainNetwork(numberOfEpochs)
+		self.sess = self.networkTrainer.sess
 
 	def setNetworkType(self, typeString) :
 		self.network.parseTypeString(typeString)
@@ -49,5 +58,6 @@ class TFPotential :
 if __name__ == "__main__" :
 	tfpot = TFPotential()
 	tfpot.setNetworkType('relu-sigmoid')
-	tfpot.train(10)
-	print tfpot(tfpot.dataGenerator.generateData(10))
+	tfpot.train()
+	x,y=tfpot.dataGenerator.generateData(10)
+	print tfpot(x)

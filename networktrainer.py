@@ -16,30 +16,33 @@ class NetworkTrainer :
 			self.tf.train.Saver(max_to_keep=None)
 
 	def trainNetwork(self, numberOfEpochs) :
-		with tf.Session() as sess :
-			sess.run(tf.initialize_all_variables())
-			xEpoch, yEpoch 	= self.system.dataGenerator.generateData(self.system.dataSize)
-			numberOfEpochs 	= self.system.numberOfEpochs
-			dataSize		= self.system.dataSize
-			batchSize 		= self.system.batchSize
+		self.sess = tf.Session()
+		self.sess.run(tf.initialize_all_variables())
+		xEpoch, yEpoch 	= self.system.dataGenerator.generateData(self.system.dataSize)
+		numberOfEpochs 	= numberOfEpochs
+		dataSize		= self.system.dataSize
+		batchSize 		= self.system.batchSize
+		testSize		= self.system.testSize
 
-			for epoch in xrange(numberOfEpochs) :
+		self.system.printer.printStart()
 
-				epochLoss = 0
-				for i in xrange(dataSize / batchSize) :
+		for epoch in xrange(numberOfEpochs) :
 
-					startIndex 	= i*batchSize
-					endIndex	= startIndex + batchSize
-					xBatch 		= xEpoch[startIndex:endIndex]
-					yBatch 		= yEpoch[startIndex:endIndex]
-					bOpt, bCost = sess.run([self.optimizer, self.cost], 
-										   feed_dict={self.x: xBatch, self.y: yBatch})
-					epochLoss += bCost
+			self.epochCost = 0
+			for i in xrange(dataSize / batchSize) :
 
-				if epoch % self.system.testInterval == 0 :
-					tOpt, tCost = sess.run([self.optimizer, self.cost], 
-										   feed_dict={self.x: xEpoch, self.y: yEpoch})
-					print "eCost=", epochLoss, "     tCost=", tCost
-				else :
-					print "eCost=", epochLoss
+				startIndex 	= i*batchSize
+				endIndex	= startIndex + batchSize
+				xBatch 		= xEpoch[startIndex:endIndex]
+				yBatch 		= yEpoch[startIndex:endIndex]
+				bOpt, bCost = self.sess.run([self.optimizer, self.cost], 
+											 feed_dict={self.x: xBatch, self.y: yBatch})
+				self.epochCost += bCost
+
+			if epoch % self.system.testInterval == 0 :
+				tOpt, tCost = self.sess.run([self.optimizer, self.cost], 
+											 feed_dict={self.x: xEpoch, self.y: yEpoch})
+				self.system.printer.printProgress(epoch, tCost)
+			else :
+				self.system.printer.printProgress(epoch)
 
