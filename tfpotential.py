@@ -9,13 +9,13 @@ import filefinder			as  ff
 import neuralnetwork		as  nn
 import networktrainer		as  nt
 import datagenerator 		as  gen
-
+import checkpointsaver		as 	ckps
 
 
 class TFPotential :
 	def __init__(self) :
 		self.argumentParser = ap.ArgumentParser(self)
-		self.filefinder 	= ff.FileFinder(self)
+		self.fileFinder 	= ff.FileFinder(self)
 		self.inputs		 	= 1
 		self.nLayers 	 	= self.argumentParser.nLayers()
 		self.nNodes  	 	= self.argumentParser.nNodes()
@@ -27,15 +27,16 @@ class TFPotential :
 						 			  nLayers		= self.nLayers, 
 						 			  outputs		= self.outputs, 
 						 			  networkType	= None) 
-		self.networkTrainer = nt.NetworkTrainer(self)
-		self.function		= lambda r: 1/r**6 * (1/r**6 - 1)
+		self.saver 			= ckps.CheckpointSaver(self, self.argumentParser().save)
+		self.networkTrainer = nt.NetworkTrainer(self, self.saver)
+		self.function		= lambda r:1/r**6 * (1/r**6 - 1)
 		self.dataGenerator	= gen.DataGenerator(0.87, 1.6)
 		self.dataGenerator.setFunction(self.function)
 		self.numberOfEpochs = int(1e10)
 		self.dataSize  		= int(1e7)
 		self.batchSize		= int(1e5)
 		self.testSize		= int(1e7)
-		self.testInterval	= 10
+		self.testInterval	= 5
 		self.printer		= printer.Printer(self)
 		self.printer.printSetup()
 
@@ -58,6 +59,9 @@ class TFPotential :
 if __name__ == "__main__" :
 	tfpot = TFPotential()
 	tfpot.setNetworkType('relu-sigmoid')
+	tfpot.dataSize  = int(1e6)
+	tfpot.testSize  = int(1e6)
+	tfpot.batchSize = int(1e5)
 	tfpot.train()
-	x,y=tfpot.dataGenerator.generateData(10)
+	x, y = tfpot.dataGenerator.generateData(10)
 	print tfpot(x)

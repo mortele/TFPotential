@@ -1,7 +1,8 @@
 import os
 import sys
 import shutil 
-import argumentparser as ap
+import datetime 		as time
+import argumentparser 	as ap
 
 
 
@@ -80,7 +81,15 @@ class FileFinder :
 		lastCheckpointName = 'ckpt-%d' % (maxCkpt)
 		self.lastCheckpoint = os.path.join(self.lastTrainingDir, lastCheckpointName)
 
-
+	def createSaveDirectory(self) :
+		if self.system.argumentParser().save :
+			now 				= time.datetime.now().strftime("%d.%m-%H.%M.%S")
+			self.saveDirName 	= os.path.join(self.trainingDir, now)
+			self.saveMetaName	= os.path.join(self.saveDirName, 'meta.dat')
+			os.makedirs(self.saveDirName) 
+			return self.saveDirName, self.saveMetaName
+		else :
+			return None, None
 
 
 
