@@ -6,6 +6,7 @@ import argumentparser 		as 	ap
 import filefinder			as  ff
 import neuralnetwork	 	as  nn
 import networktrainer		as  nt
+import dataGenerator 		as  gen
 
 
 class TFPotential :
@@ -24,7 +25,14 @@ class TFPotential :
 						 			  outputs		= self.outputs, 
 						 			  networkType	= None) 
 		self.networkTrainer = nt.NetworkTrainer(self)
-		
+		self.function		= lambda r: 1/r**6 * (1/r**6 - 1)
+		self.dataGenerator	= gen.DataGenerator(0.87, 1.6)
+		self.dataGenerator.setFunction(self.function)
+		self.numberOfEpochs = sys.maxint
+		self.dataSize  		= int(1e7)
+		self.batchSize		= int(1e5)
+		self.testSize		= int(1e7)
+		self.testInterval	= 10
 
 	def __call__(self, inputData) :
 		return self.network(inputData)
