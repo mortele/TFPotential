@@ -20,10 +20,11 @@ class Printer :
 		f = f.split(':')[1].split('\n')[0].strip()
 		print " "
 		print "Training network:"
-		print "  ╠═ function      ", f
-		print "  ╠═ data set size  %g" % self.system.dataSize
-		print "  ╠═ batch size     %g" % self.system.batchSize
-		print "  ╚═ test set size  %g" % self.system.testSize
+		print "  ╠═ epochs         %-g" % self.system.numberOfEpochs
+		print "  ╠═ function       %-s" % f
+		print "  ╠═ data set size  %-g" % self.system.dataSize
+		print "  ╠═ batch size     %-g" % self.system.batchSize
+		print "  ╚═ test set size  %-g" % self.system.testSize
 		print " "
 
 	def printProgress(self, epoch, testCost=None, saved=None) :
@@ -31,7 +32,7 @@ class Printer :
 		n  = self.system.dataSize
 		nt = self.system.testSize
 
-		if epoch % 20 == 0 :
+		if epoch % 30 == 0 :
 			print "\n%-10s %-16s %-16s %-16s %-18s" % ("Epoch", 
 													   "Cost", 
 													   "Cost/DataSize", 

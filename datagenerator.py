@@ -1,4 +1,4 @@
-import numpy 		as 	np
+import numpy as np
 
 
 class DataGenerator :
@@ -10,7 +10,7 @@ class DataGenerator :
 		self.function = function
 
 	def generateData(self, n) :
-		x = np.random.uniform(self.a, self.b, n)
+		x = np.linspace(self.a, self.b, n)
 		x = x.reshape([n, 1])
 		y = self.function(x)
 		return x, y

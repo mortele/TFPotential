@@ -9,6 +9,12 @@ class ArgumentParser :
 								 type=int, default=-1, nargs='?')
 		self.parser.add_argument('--plot', help='Plot the network potential and the error',
 								 default=False, action='store_true')
+		self.parser.add_argument('--ploterror', help='Plot the error',
+								 default=False, action='store_true')
+		self.parser.add_argument('--plotprogress', help='Plot the cost function against epoch number',
+								 default=False, action='store_true')
+		self.parser.add_argument('--plotall', help='Plot all the things',
+								 default=False, action='store_true')
 		self.parser.add_argument('--load', help='Load graph from previous training file',
 								 default=False, nargs='?')
 		self.parser.add_argument('--save', help='Save the graph and training data to file',

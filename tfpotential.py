@@ -1,5 +1,6 @@
 import sys
 import printer
+import plotter
 import tensorflow 			as 	tf
 import numpy 				as 	np
 import matplotlib.pyplot 	as 	plt
@@ -10,6 +11,7 @@ import neuralnetwork		as  nn
 import networktrainer		as  nt
 import datagenerator 		as  gen
 import checkpointsaver		as 	ckps
+
 
 
 class TFPotential :
@@ -33,12 +35,13 @@ class TFPotential :
 		self.dataGenerator	= gen.DataGenerator(0.87, 1.6)
 		self.dataGenerator.setFunction(self.function)
 		self.numberOfEpochs = int(1e10)
-		self.dataSize  		= int(1e7)
+		self.dataSize  		= int(1e6)
 		self.batchSize		= int(1e5)
-		self.testSize		= int(1e7)
+		self.testSize		= int(1e6)
 		self.testInterval	= 5
 		self.printer		= printer.Printer(self)
 		self.printer.printSetup()
+		self.plotter 		= plotter.Plotter(self)
 
 	def __call__(self, inputData, expectedOutput=None) :
 		if expectedOutput == None :
@@ -49,6 +52,7 @@ class TFPotential :
 
 	def train(self, epochs=-1) :
 		numberOfEpochs = self.numberOfEpochs if epochs == -1 else epochs
+		self.numberOfEpochs = numberOfEpochs
 		self.networkTrainer.trainNetwork(numberOfEpochs)
 		self.sess = self.networkTrainer.sess
 
@@ -59,9 +63,4 @@ class TFPotential :
 if __name__ == "__main__" :
 	tfpot = TFPotential()
 	tfpot.setNetworkType('relu-sigmoid')
-	tfpot.dataSize  = int(1e6)
-	tfpot.testSize  = int(1e6)
-	tfpot.batchSize = int(1e5)
-	tfpot.train()
-	x, y = tfpot.dataGenerator.generateData(10)
-	print tfpot(x)
+	tfpot.train(tfpot.argumentParser().epochs)

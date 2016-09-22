@@ -50,3 +50,4 @@ class NetworkTrainer :
 
 			self.system.printer.printProgress(epoch, tCost, saved)
 
+		self.system.plotter.plot()

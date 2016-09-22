@@ -17,17 +17,19 @@ class FileFinder :
 		if self.argumentParser().load == None :
 			self.findLastTrainingDirectory()
 			self.findLastCheckpoint()
-			self.loadFile = os.path.join(self.trainingDir, self.lastCheckpoint)
+			self.loadFile     = os.path.join(self.trainingDir, self.lastCheckpoint)
+			self.loadMetaFile = os.path.join(self.loadFile.split('/ckpt')[0], 'meta.dat')
 
 		# If the program was called without a --load flag, the load attribute of
 		# the parser defaults to False. So if parser.load is neither None nor 
 		# False, we assume a filename was explicitly given.
 		elif self.argumentParser().load not in {None, False}  :
-			self.loadFile = self.argumentParser().load
+			self.loadFile 		= self.argumentParser().load
+			self.loadMetaFile 	= os.path.join(self.loadFile.split('/ckpt')[0], 'meta.dat')
 
 		elif self.argumentParser().load == False :
-			self.loadFile = None
-
+			self.loadFile 		= None
+			self.loadMetaFile 	= None
 
 	def findLastTrainingDirectory(self) :
 		dirList = os.listdir(self.trainingDir)
@@ -87,8 +89,7 @@ class FileFinder :
 			self.saveDirName 	= os.path.join(self.trainingDir, now)
 			self.saveMetaName	= os.path.join(self.saveDirName, 'meta.dat')
 			os.makedirs(self.saveDirName) 
-			return os.path.join(self.trainingDir, self.saveDirName) , \
-				   os.path.join(self.trainginDir, self.saveMetaName)
+			return self.saveDirName, self.saveMetaName
 		else :
 			return None, None
 

@@ -8,7 +8,7 @@ class CheckpointSaver :
 		self.save 				= save
 		self.bestTestCost 		= None
 		self.saveSkip			= 2
-		self.index 				= 5
+		self.index 				= 0
 		self.checkpointNumber 	= 0
 		self.firstEpoch			= True
 		self.saverInitialized	= False
@@ -44,18 +44,18 @@ class CheckpointSaver :
 					nodes 	= self.system.nNodes
 					outputs = self.system.outputs
 					nType 	= self.system.networkType
-					outFile.write("%d %d %d %d %d %d %s" % (inputs, 
-															layers, 
-															nodes,
-															outputs, 
-															self.system.dataSize, 
-															self.system.testSize,
-															nType))
+					outFile.write("%d %d %d %d %d %d %s\n" % (inputs, 
+															  layers, 
+															  nodes,
+															  outputs, 
+															  self.system.dataSize, 
+															  self.system.testSize,
+															  nType))
 
 			with open(self.metaName, "a") as outFile :
-				outFile.write("%d %.15g %.15g" % (epoch, 
-												  self.system.networkTrainer.epochCost, 
-												  testCost))
+				outFile.write("%d %.15g %.15g\n" % (epoch, 
+													self.system.networkTrainer.epochCost, 
+													testCost))
 			return returnValue
 
 	def loadCheckpoint(self, fileName, session) :
