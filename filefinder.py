@@ -17,7 +17,7 @@ class FileFinder :
 		if self.argumentParser().load == None :
 			self.findLastTrainingDirectory()
 			self.findLastCheckpoint()
-			self.loadFile = self.lastCheckpoint
+			self.loadFile = os.path.join(self.trainingDir, self.lastCheckpoint)
 
 		# If the program was called without a --load flag, the load attribute of
 		# the parser defaults to False. So if parser.load is neither None nor 
@@ -87,7 +87,8 @@ class FileFinder :
 			self.saveDirName 	= os.path.join(self.trainingDir, now)
 			self.saveMetaName	= os.path.join(self.saveDirName, 'meta.dat')
 			os.makedirs(self.saveDirName) 
-			return self.saveDirName, self.saveMetaName
+			return os.path.join(self.trainingDir, self.saveDirName) , \
+				   os.path.join(self.trainginDir, self.saveMetaName)
 		else :
 			return None, None
 

@@ -59,12 +59,11 @@ class CheckpointSaver :
 			return returnValue
 
 	def loadCheckpoint(self, fileName, session) :
-		print fileName
 		if fileName != None :
 			if self.saverInitialized == False :
 				self.saverInitialized = True
 				self.saver = tf.train.Saver(max_to_keep=None)
-			self.saver.restore(self.system.networkTrainer.sess, "21.09-19.59.56/ckpt-2") #fileName)
+			self.saver.restore(self.system.networkTrainer.sess, fileName)
 			return fileName
 		else :
 			return False
