@@ -28,10 +28,10 @@ class Plotter :
 			plt.plot(x,y,'b--')
 			plt.hold('on')
 			plt.plot(x,y_,'r-')
-			plt.legend(['f(r)','NN(r)'])
+			plt.legend(['V(r)','NN(r)'])
 			plt.xlabel('r')
 			plt.ylabel('V(r)')
-			plt.title('Comparison of the function and the approximating ANN.')
+			plt.title('Comparison of the potential and the approximating ANN.')
 
 
 	def plotError(self, show=False) :
@@ -44,10 +44,10 @@ class Plotter :
 			err  = abs(y-y_) 
 			plt.figure()
 			plt.semilogy(x,err,'r-')
-			plt.legend(['|f(r)-NN(r)|'])
+			plt.legend(['|V(r)-NN(r)|'])
 			plt.xlabel('r')
 			plt.ylabel('abs. network error(r)')
-			plt.title('Absolute difference between the function and the approximating ANN.')
+			plt.title('Absolute difference between the potential and the approximating ANN.')
 
 	def plotProgress(self, show=False) :
 		if show :
