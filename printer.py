@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 import sys
+import time
 #import dill.source as ds
 
 
 class Printer :
 	def __init__(self, system) :
-		self.system = system
+		self.system 		= system
+		self.previousTime 	= time.time()
+		self.currentTime 	= time.time()
 
 	def printSetup(self) :
 		t = self.system.network.networkType
@@ -32,15 +35,19 @@ class Printer :
 		c  = self.system.networkTrainer.epochCost
 		n  = self.system.dataSize
 		nt = self.system.testSize
+		self.currentTime = time.time()
+		t  = self.currentTime - self.previousTime
+		self.previousTime = self.currentTime
 
 		if epoch % 30 == 0 :
-			print "\n%-10s %-16s %-16s %-16s %-18s" % ("Epoch", 
-													   "Cost", 
-													   "Cost/DataSize", 
-													   "Test Cost",
-													   "Test Cost/TestSize")
-			print "═"*(17*5-6+2)
-		print "%-10d %-16.8g %-16.8g" % (epoch, c, c/n),
+			print "\n%-10s %-16s %-16s %-16s %-16s %-18s" % ("Epoch", 
+															 "Cost", 
+													   		 "Cost/DataSize", 
+													   		 "Time/Epoch",
+													   		 "Test Cost",
+													   		 "Test Cost/TestSize")
+			print "═"*(17*6-6+2)
+		print "%-10d %-16.8g %-16.8g %-16.8g" % (epoch, c, c/n, t),
 		if testCost not in {-1, None} :
 			print "%-16.8g %-18.8g" % (testCost, testCost/nt),
 			if saved != None :
