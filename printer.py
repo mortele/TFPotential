@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import sys
-import dill.source as ds
+#import dill.source as ds
 
 
 class Printer :
@@ -16,8 +16,8 @@ class Printer :
 		print "  ╚═ type     ", t if t != None else "sigmoid"
 
 	def printStart(self) :
-		f = ds.getsource(self.system.function)
-		f = f.split(':')[1].split('\n')[0].strip()
+		#f = ds.getsource(self.system.function)
+		#f = f.split(':')[1].split('\n')[0].strip()
 		print " "
 		print "Training network:"
 		print "  ╠═ epochs         %-g" % self.system.numberOfEpochs

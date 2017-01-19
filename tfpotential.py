@@ -29,17 +29,19 @@ class TFPotential :
 						 			  nLayers		= self.nLayers, 
 						 			  outputs		= self.outputs, 
 						 			  networkType	= None) 
-		self.saver 			= ckps.CheckpointSaver(self, self.argumentParser().save)
+		self.saver 			= ckps.CheckpointSaver(self, 
+												   self.argumentParser().save)
 		self.networkTrainer = nt.NetworkTrainer(self, self.saver)
 		self.function		= lambda r:1/r**6 * (1/r**6 - 1)
 		self.dataGenerator	= gen.DataGenerator(0.87, 1.6)
 		self.dataGenerator.setFunction(self.function)
-		self.dataGenerator.setGeneratorType("VMC")
-		self.numberOfEpochs = int(1e10)
-		self.dataSize  		= int(1e3)
-		self.batchSize		= int(1e3)
-		self.testSize		= int(1e3)
-		self.testInterval	= 5
+		self.dataGenerator.setGeneratorType("function")
+		#self.dataGenerator.setGeneratorType("VMC")
+		self.numberOfEpochs = int(1000)
+		self.dataSize  		= int(1e7)
+		self.batchSize		= int(1e5)
+		self.testSize		= int(1e7)
+		self.testInterval	= 50
 		self.printer		= printer.Printer(self)
 		self.printer.printSetup()
 		self.plotter 		= plotter.Plotter(self)

@@ -13,6 +13,7 @@ class CheckpointSaver :
 		self.firstEpoch			= True
 		self.saverInitialized	= False
 		self.saveDirectory, self.metaName = self.system.fileFinder.createSaveDirectory()
+		self.setSaveSkip(self.system.argumentParser().saveeach)
 
 	def saveCheckpoint(self, epoch, testCost, session) :
 		returnValue = False
@@ -22,7 +23,7 @@ class CheckpointSaver :
 				self.saverInitialized 	= True
 
 			if testCost != -1 :
-				if self.index >= 5 :
+				if self.index >= self.saveSkip :
 					if (self.bestTestCost == None) or (testCost < self.bestTestCost) :
 						self.bestTestCost = testCost
 						self.saver.save(session,
@@ -35,6 +36,8 @@ class CheckpointSaver :
 						self.index += 1
 				else :
 					self.index += 1
+			else :
+				self.index += 1
 
 			if self.firstEpoch :
 				self.firstEpoch = False
@@ -67,5 +70,19 @@ class CheckpointSaver :
 			return fileName
 		else :
 			return False
+
+	def setSaveSkip(self, saveEach) :		
+		self.saveSkip = saveEach
+
+
+
+
+
+
+
+
+
+
+
 
 

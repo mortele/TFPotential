@@ -21,6 +21,8 @@ class ArgumentParser :
 								 default=False, action='store_true')
 		self.parser.add_argument('--size', help='[# of hidden layers, # of neurons]',
 								 type=int, nargs='+')
+		self.parser.add_argument('--saveeach', help='How many epochs between each graph save',
+								 type=int, default=10)
 		self.parser.add_argument('--type', help='Which activation functions to use',
 								 choices=['sigmoid','relu','relu-sigmoid'],
 								 default=False, nargs='?')
@@ -47,4 +49,3 @@ class ArgumentParser :
 			return self().type
 		else :
 			return None
-		

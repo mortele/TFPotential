@@ -38,7 +38,7 @@ class DataGenerator :
 		return x, y
 
 	def generateData(self, n) :
-		if self.generateData == "function" :
+		if self.generatorType == "function" :
 			return self.generateLinspace(n) 
 		elif self.generatorType == "VMC" :
 			return self.VMCData(n)
