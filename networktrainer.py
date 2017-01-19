@@ -23,7 +23,7 @@ class NetworkTrainer :
 
 
 	def trainNetwork(self, numberOfEpochs) :
-		self.sess = tf.Session()
+		self.sess = tf.Session(config=tf.ConfigProto(log_device_placement=True))
 		self.sess.run(tf.initialize_all_variables())
 		loaded = self.saver.loadCheckpoint(	self.system.fileFinder.loadFile, 
 											self.sess)
