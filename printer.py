@@ -18,6 +18,7 @@ class Printer :
 	def printStart(self) :
 		#f = ds.getsource(self.system.function)
 		#f = f.split(':')[1].split('\n')[0].strip()
+		f 	= " "
 		print " "
 		print "Training network:"
 		print "  ╠═ epochs         %-g" % self.system.numberOfEpochs
