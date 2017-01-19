@@ -49,6 +49,7 @@ class Printer :
 				print " "
 		else :
 			print " "
+		sys.stdout.flush()
 
 	def printLoad(self, fileName) :
 		if fileName != False :
