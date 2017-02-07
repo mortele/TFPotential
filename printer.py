@@ -61,3 +61,4 @@ class Printer :
 	def printLoad(self, fileName) :
 		if fileName != False :
 			print "\nLoading graph: ", fileName
+

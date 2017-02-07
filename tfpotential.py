@@ -13,7 +13,6 @@ import datagenerator 		as  gen
 import checkpointsaver		as 	ckps
 
 
-
 class TFPotential :
 	def __init__(self) :
 		self.argumentParser = ap.ArgumentParser(self)
@@ -38,10 +37,10 @@ class TFPotential :
 		self.dataGenerator.setGeneratorType("function")
 		#self.dataGenerator.setGeneratorType("VMC")
 		self.numberOfEpochs = int(1000)
-		self.dataSize  		= int(1e7)
-		self.batchSize		= int(1e5)
-		self.testSize		= int(1e7)
-		self.testInterval	= 50
+		self.dataSize  		= int(1e7)/100
+		self.batchSize		= int(1e5)/100
+		self.testSize		= int(1e7)/100
+		self.testInterval	= 10
 		self.printer		= printer.Printer(self)
 		self.printer.printSetup()
 		self.plotter 		= plotter.Plotter(self)
