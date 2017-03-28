@@ -62,14 +62,15 @@ class CheckpointSaver :
 													testCost))
 			return returnValue
 
-	def saveNetwork(self, checkpointNumber) :
+	def saveNetwork(self, checkpointNumber, session) :
 		trainer = self.system.networkTrainer
-		sess 	= trainer.sess
+		sess 	= session
 		var 	= tf.trainable_variables()
-		sess.run(tf.initialize_all_variables())
+		#sess.run(tf.initialize_all_variables())
 		
 		networkSaveFileName = 'network-%d' % checkpointNumber
-		networkFile = os.path.join(self.saveDirectory, networkSaveFileName)
+		#networkFile = os.path.join(self.saveDirectory, networkSaveFileName)
+		networkFile = os.path.join("/Users/morten/Documents/Master/TFPotential/C++Test", networkSaveFileName)
 		with open(networkFile, 'w') as saveFile :
 			inputs 	= self.system.inputs
 			nLayers = self.system.nLayers
@@ -79,21 +80,29 @@ class CheckpointSaver :
 												nLayers, 
 												nNodes,
 												outputs))
-			for layer in xrange(self.system.nLayers) :
+			
+			for layer in xrange(self.system.nLayers+2) :
 				w = sess.run([v.name for v in var if v.name == 'w%d:0' % layer])
 				b = sess.run([v.name for v in var if v.name == 'b%d:0' % layer])
 
-				for i in xrange(inputs if layer == 0 else nNodes) :
-					for j in xrange(self.system.nNodes) :
+				#print "w%d:0 " % layer, w[0]
+				#print "b%d:0 " % layer, b[0]
+
+				iLimit = nNodes
+				jLimit = nNodes
+				if layer == 0 : iLimit = inputs
+				if layer == nLayers+1 : jLimit = outputs
+
+				for i in xrange(iLimit) :
+					for j in xrange(jLimit) :
 						saveFile.write('%20.16f ' % w[0][i][j])
 					saveFile.write('\n')
-				for i in xrange(inputs if layer == 0 else nNodes) :
+				for i in xrange(min(nNodes, jLimit)) :
 					saveFile.write('%20.16f ' % b[0][i])
-				if layer != nLayers-1 :
-					saveFile.write('\n')
-		
 
-				
+				saveFile.write('\n')
+			print("\n\nSaved network to %s\n" %networkFile)
+			
 
 
 

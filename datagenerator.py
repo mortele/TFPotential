@@ -33,8 +33,8 @@ class DataGenerator :
 				if numberOfLines >= n :
 					break
 
-		x = np.asarray(x).reshape([numberOfLines,1])
-		y = np.asarray(y).reshape([numberOfLines,1])
+		x = np.asarray(x).reshape([numberOfLines, 1])
+		y = np.asarray(y).reshape([numberOfLines, 1])
 		return x, y
 
 	def generateData(self, n) :

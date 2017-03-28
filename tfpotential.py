@@ -12,6 +12,7 @@ import networktrainer		as  nt
 import datagenerator 		as  gen
 import checkpointsaver		as 	ckps
 
+tf.set_random_seed(2)
 
 class TFPotential :
 	def __init__(self) :
@@ -27,20 +28,21 @@ class TFPotential :
 						 			  nNodes		= self.nNodes,
 						 			  nLayers		= self.nLayers, 
 						 			  outputs		= self.outputs, 
-						 			  networkType	= None) 
+						 			  networkType	= self.networkType) 
 		self.saver 			= ckps.CheckpointSaver(self, 
 												   self.argumentParser().save)
 		self.networkTrainer = nt.NetworkTrainer(self, self.saver)
-		self.function		= lambda r:1/r**6 * (1/r**6 - 1)
-		self.dataGenerator	= gen.DataGenerator(0.87, 1.6)
+		#self.function		= lambda r: 1/r**6 * (1/r**6 - 1)
+		self.function		= lambda r: 0.5*r
+		self.dataGenerator	= gen.DataGenerator(0.93, 1.6)
 		self.dataGenerator.setFunction(self.function)
 		self.dataGenerator.setGeneratorType("function")
 		#self.dataGenerator.setGeneratorType("VMC")
 		self.numberOfEpochs = int(1000)
-		self.dataSize  		= int(1e7)/100
-		self.batchSize		= int(1e5)/100
-		self.testSize		= int(1e7)/100
-		self.testInterval	= 10
+		self.dataSize  		= int(1e4)
+		self.batchSize		= int(1e3)
+		self.testSize		= int(1e4)
+		self.testInterval	= 5
 		self.printer		= printer.Printer(self)
 		self.printer.printSetup()
 		self.plotter 		= plotter.Plotter(self)

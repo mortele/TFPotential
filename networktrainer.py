@@ -60,21 +60,13 @@ class NetworkTrainer :
 			saved = self.saver.saveCheckpoint(epoch, tCost, self.sess)
 
 			self.system.printer.printProgress(epoch, tCost, saved)
-			#self.grads = self.sess.run([g[0] for g in self.gradientsAndVariables], 
-			#								feed_dict={	self.x: xBatch[0:5], 
-			#											self.y: yBatch[0:5]})
-			#self.vars = self.sess.run([g[1] for g in self.gradientsAndVariables], 
-			#								feed_dict={	self.x: xBatch[0:5], 
-			#											self.y: yBatch[0:5]})
-			#
-			#print " "
-			#for i in xrange(len(self.vars)) :
-			#	print "var:", tf.trainable_variables()[i].name
-			#	print self.vars[i]
-			#	print "grad:" 
-			#	print self.grads[i]
-			#	print " "
-			#print " "
 
-
+		self.system.saver.saveNetwork(99, self.sess)
 		self.system.plotter.plot()
+
+
+
+
+
+
+
