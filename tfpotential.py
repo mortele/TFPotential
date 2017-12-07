@@ -1,3 +1,4 @@
+import os
 import sys
 import printer
 import plotter
@@ -11,8 +12,9 @@ import neuralnetwork		as  nn
 import networktrainer		as  nt
 import datagenerator 		as  gen
 import checkpointsaver		as 	ckps
+os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
 
-tf.set_random_seed(2)
+#tf.set_random_seed(2)
 
 class TFPotential :
 	def __init__(self) :
@@ -32,20 +34,36 @@ class TFPotential :
 		self.saver 			= ckps.CheckpointSaver(self, 
 												   self.argumentParser().save)
 		self.networkTrainer = nt.NetworkTrainer(self, self.saver)
-		#self.function		= lambda r: 1/r**6 * (1/r**6 - 1)
-		self.function		= lambda r: 0.5*r
+		self.function		= lambda r: 1/r**6 * (1/r**6 - 1)
+		#self.function		= lambda r: 0.5*r
 		self.dataGenerator	= gen.DataGenerator(0.93, 1.6)
 		self.dataGenerator.setFunction(self.function)
 		self.dataGenerator.setGeneratorType("function")
 		#self.dataGenerator.setGeneratorType("VMC")
-		self.numberOfEpochs = int(1000)
-		self.dataSize  		= int(1e4)
-		self.batchSize		= int(1e3)
-		self.testSize		= int(1e4)
+		self.numberOfEpochs = int(100)
+		self.dataSize  		= int(1e6)
+		self.batchSize		= int(5e4)
+		self.testSize		= int(1e7)
 		self.testInterval	= 5
 		self.printer		= printer.Printer(self)
 		self.printer.printSetup()
 		self.plotter 		= plotter.Plotter(self)
+
+
+	def variableSummaries(self, name, variable) :
+		with tf.name_scope('Summaries'):
+
+			mean = tf.reduce_mean(variable)
+			tf.summary.scalar('Mean/' + name, mean)
+
+			with tf.name_scope('StandardDeviation'):
+				stddev = tf.sqrt(tf.reduce_mean(tf.square(variable - mean)))
+
+			tf.summary.scalar('StandardDeviation/' + name, stddev)
+			tf.summary.scalar('Max/' + name, tf.reduce_max(variable))
+			tf.summary.scalar('Min/' + name, tf.reduce_min(variable))
+
+			tf.summary.histogram(name, variable)       
 
 	def __call__(self, inputData, expectedOutput=None) :
 		if expectedOutput == None :
@@ -66,5 +84,5 @@ class TFPotential :
 
 if __name__ == "__main__" :
 	tfpot = TFPotential()
-	tfpot.setNetworkType('relu-sigmoid')
+	tfpot.setNetworkType('relu')
 	tfpot.train(tfpot.argumentParser().epochs)

@@ -1,4 +1,5 @@
 import sys
+import os
 import tensorflow 		as 	tf
 import numpy 			as 	np
 import datagenerator 	as 	gen
@@ -13,19 +14,15 @@ class NetworkTrainer :
 		self.y			= tf.placeholder(	'float', [None, system.outputs],
 											name='y')
 		self.prediction = system.network(self.x)
-		self.cost 		= tf.nn.l2_loss(tf.sub(self.prediction, self.y))
+		self.cost 		= tf.nn.l2_loss(tf.subtract(self.prediction, self.y))
 		self.adam 		= tf.train.AdamOptimizer()
 		self.optimizer 	= self.adam.minimize(self.cost)
 		self.save 		= system.argumentParser().save
 		self.saver 		= saver
-		#self.gradientsAndVariables = self.adam.compute_gradients(self.prediction, 
-		#														 tf.trainable_variables())
-
 
 	def trainNetwork(self, numberOfEpochs) :
-		#self.sess = tf.Session(config=tf.ConfigProto(log_device_placement=True))
 		self.sess = tf.Session()
-		self.sess.run(tf.initialize_all_variables())
+		self.sess.run(tf.global_variables_initializer())
 		loaded = self.saver.loadCheckpoint(	self.system.fileFinder.loadFile, 
 											self.sess)
 		self.system.printer.printLoad(loaded)
@@ -61,7 +58,7 @@ class NetworkTrainer :
 
 			self.system.printer.printProgress(epoch, tCost, saved)
 
-		self.system.saver.saveNetwork(99, self.sess)
+		self.system.saver.saveNetwork(self.sess)
 		self.system.plotter.plot()
 
 
