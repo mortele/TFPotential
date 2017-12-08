@@ -15,7 +15,7 @@ class NetworkTrainer :
 											name='y')
 		self.prediction = system.network(self.x)
 		self.cost 		= tf.nn.l2_loss(tf.subtract(self.prediction, self.y))
-		self.adam 		= tf.train.AdamOptimizer()
+		self.adam 		= tf.train.AdamOptimizer(learning_rate=0.001)
 		self.optimizer 	= self.adam.minimize(self.cost)
 		self.save 		= system.argumentParser().save
 		self.saver 		= saver
@@ -36,6 +36,9 @@ class NetworkTrainer :
 		self.system.printer.printStart()
 
 		for epoch in xrange(numberOfEpochs) :
+			indices = np.random.choice(dataSize, dataSize, replace=False)
+			xEpoch = xEpoch[indices]
+			yEpoch = yEpoch[indices]			
 
 			self.epochCost = 0
 			for i in xrange(dataSize / batchSize) :

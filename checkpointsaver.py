@@ -61,7 +61,8 @@ class CheckpointSaver :
 															  self.system.testSize,
 															  nType))
 
-			with open(self.metaName, "a") as outFile :
+			with open(self.metaName, "a") as outFile :			
+				#tf.summary.histogram(name, variable)       
 				outFile.write("%d %.15g %.15g\n" % (epoch, 
 													self.system.networkTrainer.epochCost, 
 													testCost))
@@ -76,10 +77,11 @@ class CheckpointSaver :
 			var 	= tf.trainable_variables()
 			
 			networkSaveFileName = 'network'
-			#networkFile = os.path.join(self.saveDirectory, networkSaveFileName)
-			networkFile = os.path.join("/Users/morten/Documents/Master/TFPotential/C++Test", networkSaveFileName)
+			networkFile = os.path.join(self.saveDirectory, networkSaveFileName)
+			#networkFile = os.path.join("/Users/morten/Documents/Master/TFPotential/C++Test", networkSaveFileName)
 			with open(networkFile, 'w') as saveFile :
 				inputs 	= self.system.inputs
+				"""
 				nLayers = self.system.nLayers
 				nNodes 	= self.system.nNodes
 				outputs = self.system.outputs
@@ -106,6 +108,7 @@ class CheckpointSaver :
 
 					saveFile.write('\n')
 				print("\n\nSaved network to %s\n" %networkFile)
+				"""
 		return returnValue			
 
 

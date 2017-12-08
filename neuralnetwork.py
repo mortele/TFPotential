@@ -18,9 +18,11 @@ class NeuralNetwork :
 		return bias
 
 	def initializeWeight(self, shape, layer) :
+		return tf.Variable( tf.random_normal(shape, stddev=1.0) )
+		
 		nIn   = shape[0]
 		nOut  = shape[1]
-		limit = np.sqrt(6.0 / (nIn + nOut))
+		limit = 4*np.sqrt(6.0 / (nIn + nOut))
 		lowerLimit = -limit
 		upperLimit =  limit
 
@@ -99,7 +101,30 @@ class NeuralNetwork :
 					outputs,
 					hiddenActivation,
 					lastActivation) :
+		
+		"""
+		w, b = [], []
+		w.append(self.initializeWeights([inputs, nNodes], 0, 'w'))
+		b.append(self.initializeWeights([inputs], 		  0, 'b'))
+		y_ = self.hiddenActivation(tf.add(tf.matmul(inputData, w[0]), b[0]))
 
+		for layer in range(1, nLayers-1) :
+			w.append(self.initializeWeights([nNodes, nNodes], layer, 'w'))
+			b.append(self.initializeWeights([nNodes], 		  layer, 'b'))
+			y_ = self.hiddenActivation(tf.add(tf.matmul(y_, w[layer]), b[layer]))
+
+		w.append(self.initializeWeights([nNodes, nNodes], nLayers-1, 'w'))
+		b.append(self.initializeWeights([nNodes], 		  nLayers-1, 'b'))
+		y_ = self.lastActivation(tf.add(tf.matmul(y_, w[nLayers-1]), b[nLayers-1]))
+
+		w.append(self.initializeWeights([nNodes, outputs], nLayers, 'w'))
+		b.append(self.initializeWeights([outputs], 		   nLayers, 'b'))
+		return tf.add(tf.matmul(y_, w[nLayers]), b[nLayers])
+		"""
+		
+		
+		
+		
 		self.w, self.b = [], []
 		self.inputs = inputs
 		self.nNodes = nNodes
@@ -121,12 +146,13 @@ class NeuralNetwork :
 		"""
 		return y_
 
-		"""
+		
 		#self.w.append(self.initializeWeights([inputs, nNodes], 0, 'w'))
 		#self.b.append(self.initializeWeights([nNodes], 		   0, 'b'))
 		#y_ = self.hiddenActivation(tf.add(tf.matmul(inputData, self.w[0]), self.b[0]))
 
 		#for layer in range(1, nLayers) :
+		"""
 		iLimit = inputs
 		for layer in range(0, nLayers) :
 			self.w.append(self.initializeWeights([iLimit, nNodes], layer, 'w'))

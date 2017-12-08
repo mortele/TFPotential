@@ -15,7 +15,7 @@ class DataGenerator :
 		self.function = function
 
 	def generateLinspace(self, n) :
-		x = np.linspace(self.a, self.b, n)
+		x = np.linspace(self.a, self.b, n, dtype=np.float32)
 		x = x.reshape([n, 1])
 		y = self.function(x)
 		return x, y

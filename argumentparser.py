@@ -36,7 +36,7 @@ class ArgumentParser :
 		if self().size != None and self().size != False :
 			return self().size[0]
 		else :
-			return 5
+			return 2
 
 	def nNodes(self) :
 		if self().size != None and self().size != False :

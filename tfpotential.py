@@ -41,10 +41,10 @@ class TFPotential :
 		self.dataGenerator.setGeneratorType("function")
 		#self.dataGenerator.setGeneratorType("VMC")
 		self.numberOfEpochs = int(100)
-		self.dataSize  		= int(1e6)
-		self.batchSize		= int(5e4)
-		self.testSize		= int(1e7)
-		self.testInterval	= 5
+		self.dataSize  		= int(1e5)
+		self.batchSize		= int(200)
+		self.testSize		= int(1e3)
+		self.testInterval	= 100
 		self.printer		= printer.Printer(self)
 		self.printer.printSetup()
 		self.plotter 		= plotter.Plotter(self)
@@ -84,5 +84,8 @@ class TFPotential :
 
 if __name__ == "__main__" :
 	tfpot = TFPotential()
-	tfpot.setNetworkType('relu')
+	#tfpot.setNetworkType('relu')
 	tfpot.train(tfpot.argumentParser().epochs)
+	
+	
+	
