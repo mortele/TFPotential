@@ -19,32 +19,59 @@ class Plotter :
 
 	def plotFunction(self, show=False) :
 		if show :
-			x, y = self.system.dataGenerator.generateData(1000)
-			y_   = self.system.networkTrainer.sess.run(
+			xTr  = self.system.networkTrainer.xTest
+			yTr  = self.system.networkTrainer.yTest
+			yTr_ = self.system.networkTrainer.sess.run(
 								self.system.networkTrainer.prediction,
-								feed_dict = {self.system.networkTrainer.x: x,
-											 self.system.networkTrainer.y: y})
+								feed_dict = {self.system.networkTrainer.x: xTr,
+											 self.system.networkTrainer.y: yTr})
+			xTe  = self.system.networkTrainer.xTrain
+			yTe  = self.system.networkTrainer.yTrain
+			yTe_ = self.system.networkTrainer.sess.run(
+								self.system.networkTrainer.prediction,
+								feed_dict = {self.system.networkTrainer.x: xTr,
+											 self.system.networkTrainer.y: yTr})											 
 			plt.figure()
-			plt.plot(x,y,'b--')
+			plt.plot(xTr,yTr,'b--')
 			plt.hold('on')
-			plt.plot(x,y_,'r-')
-			plt.legend(['V(r)','NN(r)'])
+			plt.plot(xTr,yTr_,'r-')
+			plt.legend(['f(r)','NN(r)'])
 			plt.xlabel('r')
-			plt.ylabel('V(r)')
-			plt.title('Comparison of the potential and the approximating ANN.')
+			plt.ylabel('function value')
+			plt.title('Comparison of the training data and the approximating ANN.')
+			
+			plt.figure()
+			plt.plot(xTe,yTe,'b--')
+			plt.hold('on')
+			plt.plot(xTe,yTe_,'r-')
+			plt.legend(['f(r)','NN(r)'])
+			plt.xlabel('r')
+			plt.ylabel('function value')
+			plt.title('Comparison of the test data and the approximating ANN.')
 
 
 	def plotError(self, show=False) :
 		if show :
-			x, y = self.system.dataGenerator.generateData(1000)
-			y_   = self.system.networkTrainer.sess.run(
+			xTr  = self.system.networkTrainer.xTest
+			yTr  = self.system.networkTrainer.yTest
+			yTr_ = self.system.networkTrainer.sess.run(
 								self.system.networkTrainer.prediction,
-								feed_dict = {self.system.networkTrainer.x: x,
-											 self.system.networkTrainer.y: y})
-			err  = abs(y-y_) 
+								feed_dict = {self.system.networkTrainer.x: xTr,
+											 self.system.networkTrainer.y: yTr})
+			xTe  = self.system.networkTrainer.xTrain
+			yTe  = self.system.networkTrainer.yTrain
+			yTe_ = self.system.networkTrainer.sess.run(
+								self.system.networkTrainer.prediction,
+								feed_dict = {self.system.networkTrainer.x: xTr,
+											 self.system.networkTrainer.y: yTr})						
+			
+			errTr  = abs(yTr-yTr_) 
+			errTe  = abs(yTe-yTe_)
 			plt.figure()
-			plt.semilogy(x,err,'r-')
-			plt.legend(['|V(r)-NN(r)|'])
+			plt.semilogy(xTr,errTr,'r-')
+			plt.hold('on')
+			plt.semilogy(xTe,errTe,'b-')
+			plt.legend(['|train(r)-NN(r)|', '|test(r)-NN(r)|'])
 			plt.xlabel('r')
 			plt.ylabel('abs. network error(r)')
 			plt.title('Absolute difference between the potential and the approximating ANN.')

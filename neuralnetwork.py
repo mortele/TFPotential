@@ -133,8 +133,8 @@ class NeuralNetwork :
 
 		y_ = self.layer(y_, 0, activation=self.hiddenActivation, inputLayer=True)
 		y_ = self.layer(y_, 1, activation=self.hiddenActivation)
-		y_ = self.layer(y_, 2, activation=self.hiddenActivation)
-		y_ = self.layer(y_, 3, activation=None, 				 outputLayer=True)
+		#y_ = self.layer(y_, 2, activation=self.hiddenActivation)
+		y_ = self.layer(y_, 2, activation=None, 				 outputLayer=True)
 
 		"""
 		y_ = self.layer(y_, 0, activation=self.hiddenActivation, inputLayer=True)

@@ -15,6 +15,7 @@ class NetworkTrainer :
 											name='y')
 		self.prediction = system.network(self.x)
 		self.cost 		= tf.nn.l2_loss(tf.subtract(self.prediction, self.y))
+		self.testCost 	= tf.nn.l2_loss(tf.subtract(self.prediction, self.y))		
 		self.adam 		= tf.train.AdamOptimizer(learning_rate=0.001)
 		self.optimizer 	= self.adam.minimize(self.cost)
 		self.save 		= system.argumentParser().save
@@ -27,7 +28,14 @@ class NetworkTrainer :
 											self.sess)
 		self.system.printer.printLoad(loaded)
 
-		xEpoch, yEpoch 	= self.system.dataGenerator.generateData(self.system.dataSize)
+		xEpoch, yEpoch, xTest, yTest = self.system.dataGenerator.generateData \
+														(self.system.dataSize,
+														 self.system.testSize)
+		self.xTest  = xTest
+		self.yTest  = yTest
+		self.xTrain = xEpoch
+		self.yTrain = yEpoch
+		
 		numberOfEpochs 	= numberOfEpochs
 		dataSize		= self.system.dataSize
 		batchSize 		= self.system.batchSize
@@ -54,9 +62,9 @@ class NetworkTrainer :
 
 			tCost = -1
 			if epoch % self.system.testInterval == 0 :
-				tOpt, tCost = self.sess.run([self.optimizer, self.cost], 
-											 feed_dict={self.x: xEpoch, 
-														self.y: yEpoch})
+				tOpt, tCost = self.sess.run([self.testCost, self.cost], 
+											 feed_dict={self.x: xTest, 
+														self.y: yTest})
 			saved = self.saver.saveCheckpoint(epoch, tCost, self.sess)
 
 			self.system.printer.printProgress(epoch, tCost, saved)
