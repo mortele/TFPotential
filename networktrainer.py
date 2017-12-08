@@ -45,6 +45,7 @@ class NetworkTrainer :
 		dataSize		= self.system.dataSize
 		batchSize 		= self.system.batchSize
 		testSize		= self.system.testSize
+		batchSize = dataSize
 		
 		numberOfEpochs 	= numberOfEpochs
 		

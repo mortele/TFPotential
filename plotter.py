@@ -19,15 +19,15 @@ class Plotter :
 
 	def plotFunction(self, show=False) :
 		if show :
-			xTr  = self.system.networkTrainer.xTest
-			yTr  = self.system.networkTrainer.yTest
-			yTr_ = self.system.networkTrainer.sess.run(
-								self.system.networkTrainer.prediction,
-								feed_dict = {self.system.networkTrainer.x: xTr,
-											 self.system.networkTrainer.y: yTr})
-			xTe  = self.system.networkTrainer.xTrain
-			yTe  = self.system.networkTrainer.yTrain
+			xTe  = self.system.networkTrainer.xTest
+			yTe  = self.system.networkTrainer.yTest
 			yTe_ = self.system.networkTrainer.sess.run(
+								self.system.networkTrainer.prediction,
+								feed_dict = {self.system.networkTrainer.x: xTe,
+											 self.system.networkTrainer.y: yTe})
+			xTr  = self.system.networkTrainer.xTrain
+			yTr  = self.system.networkTrainer.yTrain
+			yTr_ = self.system.networkTrainer.sess.run(
 								self.system.networkTrainer.prediction,
 								feed_dict = {self.system.networkTrainer.x: xTr,
 											 self.system.networkTrainer.y: yTr})											 
