@@ -78,7 +78,7 @@ class FileFinder :
 			else :
 				j = j + 1
 		N 			= len(fileList)
-		ckptNumbers = [int(fileList[i].split('-')[1]) for i in xrange(N)]
+		ckptNumbers = [int((fileList[i].split('-')[1]).split('.')[0]) for i in xrange(N)]
 		maxCkpt 	= max(ckptNumbers)
 		lastCheckpointName = 'ckpt-%d' % (maxCkpt)
 		self.lastCheckpoint = os.path.join(self.lastTrainingDir, lastCheckpointName)

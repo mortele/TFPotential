@@ -37,7 +37,7 @@ class TFPotential :
 		self.function		= lambda r: 1/r**6 * (1/r**6 - 1)
 		#self.function		= lambda r: 0.5*r
 		#self.function		= lambda r: r/r*np.random.normal(0,1)# +np.sin(7.0*np.pi*r)
-		self.dataGenerator	= gen.DataGenerator(0.93, 1.6)
+		self.dataGenerator	= gen.DataGenerator(0.93, 1.6, self)
 		self.dataGenerator.setFunction(self.function)
 		#self.dataGenerator.setGeneratorType("function")
 		#self.dataGenerator.setGeneratorType("VMC")

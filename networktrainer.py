@@ -27,20 +27,27 @@ class NetworkTrainer :
 		loaded = self.saver.loadCheckpoint(	self.system.fileFinder.loadFile, 
 											self.sess)
 		self.system.printer.printLoad(loaded)
-
-		xEpoch, yEpoch, xTest, yTest = self.system.dataGenerator.generateData \
-														(self.system.dataSize,
-														 self.system.testSize)
-		self.xTest  = xTest
-		self.yTest  = yTest
-		self.xTrain = xEpoch
-		self.yTrain = yEpoch
 		
-		numberOfEpochs 	= numberOfEpochs
+		if not loaded :
+			xEpoch, yEpoch, xTest, yTest = self.system.dataGenerator.generateData \
+															(self.system.dataSize,
+															 self.system.testSize)
+			self.xTest  = xTest
+			self.yTest  = yTest
+			self.xTrain = xEpoch
+			self.yTrain = yEpoch
+		
+		xTest = self.xTest
+		yTest = self.yTest
+		xEpoch = self.xTrain
+		yEpoch = self.yTrain
+		
 		dataSize		= self.system.dataSize
 		batchSize 		= self.system.batchSize
 		testSize		= self.system.testSize
-
+		
+		numberOfEpochs 	= numberOfEpochs
+		
 		self.system.printer.printStart()
 
 		for epoch in xrange(numberOfEpochs) :

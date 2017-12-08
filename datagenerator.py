@@ -4,9 +4,10 @@ import matplotlib.pyplot as plt
 
 
 class DataGenerator :
-	def __init__(self, a, b) :
+	def __init__(self, a, b, system) :
 		self.a = a
 		self.b = b
+		self.system = system
 		self.generateFunction = self.generateLinspace
 
 	def setGeneratorType(self, generatorType="function") :
@@ -27,7 +28,8 @@ class DataGenerator :
 			xTest = xTest.reshape([nTest, 1])		
 			yTest = self.function(xTest)		
 			return x, y, xTest, yTest
-	
+			
+			
 	def noise(self, nTrain, nTest=None) :
 		
 		def noiseFunction(r, n) :
@@ -53,7 +55,7 @@ class DataGenerator :
 			plt.plot(x,y,'r-')
 			plt.hold('on')
 			plt.plot(x,yTest,'b--')
-			plt.show()
+			#plt.show()
 			return x, y, x, yTest
 			
 	
