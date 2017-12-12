@@ -45,16 +45,19 @@ class NetworkTrainer :
 		dataSize		= self.system.dataSize
 		batchSize 		= self.system.batchSize
 		testSize		= self.system.testSize
-		batchSize = dataSize
+		#batchSize = dataSize
 		
 		numberOfEpochs 	= numberOfEpochs
 		
 		self.system.printer.printStart()
 
 		for epoch in xrange(numberOfEpochs) :
-			indices = np.random.choice(dataSize, dataSize, replace=False)
-			xEpoch = xEpoch[indices]
-			yEpoch = yEpoch[indices]			
+		
+			#indices = np.random.choice(dataSize, dataSize, replace=False)
+			shuffle = np.arange(xEpoch.shape[0])
+			np.random.shuffle(shuffle)
+			xEpoch = xEpoch[shuffle,:]
+			yEpoch = yEpoch[shuffle,:]			
 
 			self.epochCost = 0
 			for i in xrange(dataSize / batchSize) :

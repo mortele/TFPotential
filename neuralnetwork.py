@@ -11,10 +11,10 @@ class NeuralNetwork :
 		self.summary 			= self.system.variableSummaries
 
 	def initializeBias(self, shape, layer) :
-		name = 'b%d' % (layer)
-		with tf.name_scope("Biases") :
-			bias = tf.Variable(tf.zeros(shape), name=name)
-			self.summary(name, bias)
+		namee = 'b%d' % (layer)
+		#with tf.name_scope("Biases") :
+		bias = tf.Variable(tf.zeros(shape), name=namee)
+		#self.summary(name, bias)
 		return bias
 
 	def initializeWeight(self, shape, layer) :
@@ -26,11 +26,11 @@ class NeuralNetwork :
 		lowerLimit = -limit
 		upperLimit =  limit
 
-		name = 'w%d' % (layer)
-		with tf.name_scope("Weights") :
-			weight = tf.Variable(tf.random_uniform(shape, lowerLimit, upperLimit), 
-			   					 name=name); 
-			self.summary(name, weight)
+		namee = 'w%d' % (layer)
+		print name
+		#with tf.name_scope("Weights") :
+		weight = tf.Variable(tf.random_uniform(shape, lowerLimit, upperLimit), name=namee); 
+		#self.summary(name, weight)
 		return weight
 
 		#return tf.Variable(tf.random_normal(shape, stddev=0.1),
@@ -42,6 +42,7 @@ class NeuralNetwork :
 						 nLayers, 
 						 outputs, 
 						 networkType=None) :
+						 
 		self.networkType = networkType
 		self.nLayers 	 = nLayers
 		self.nNodes 	 = nNodes
@@ -130,7 +131,7 @@ class NeuralNetwork :
 		self.nNodes = nNodes
 		self.hiddenActivation = hiddenActivation
 		self.lastActivation   = lastActivation
-
+		"""
 		y_ = self.layer(y_, 0, activation=self.hiddenActivation, inputLayer=True)
 		y_ = self.layer(y_, 1, activation=self.hiddenActivation)
 		#y_ = self.layer(y_, 2, activation=self.hiddenActivation)
@@ -141,9 +142,9 @@ class NeuralNetwork :
 		for i in xrange(1, nLayers) :
 			y_ = self.layer(y_, i, 	   activation=self.hiddenActivation)
 			
-		y_ = self.layer(y_, nLayers,   activation=self.lastActivation)
+		#y_ = self.layer(y_, nLayers,   activation=self.lastActivation)
 		y_ = self.layer(y_, nLayers+1, activation=None, outputLayer=True)
-		"""
+		
 		return y_
 
 		

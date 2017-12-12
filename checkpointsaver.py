@@ -47,11 +47,13 @@ class CheckpointSaver :
 			else :
 				self.index += 1
 				
-			if epoch < 20 :
+			if epoch < -1 :
 				self.saveNetworkOutput(session, epoch)
-			elif epoch % 5 == 0 :
+				self.saveNetwork(session,epoch)
+			elif epoch % 5000 == 0 :
 				self.saveNetworkOutput(session, epoch)
-
+				self.saveNetwork(session,epoch)
+				
 			if self.firstEpoch :
 				self.firstEpoch = False
 				with open(self.metaName, "w") as outFile :
@@ -67,18 +69,33 @@ class CheckpointSaver :
 															  self.system.dataSize, 
 															  self.system.testSize,
 															  nType))
+				"""
 				with open(os.path.join(self.saveDirectory,'trainSet.txt'), 'w') as outFile :
 					xTrain = self.system.networkTrainer.xTrain
 					yTrain = self.system.networkTrainer.yTrain
-					for i in xrange(len(xTrain)) :
-						outFile.write('%30.20g %30.20g\n' % (xTrain[i], yTrain[i]))
+					if self.system.inputs == 1 :
+						for i in xrange(len(xTrain)) :
+							outFile.write('%30.20g %30.20g\n' % (xTrain[i], yTrain[i]))
+					elif self.system.inputs == 2 :
+						for i in xrange(len(xTrain)) :
+							outFile.write('%30.20g %30.20g %30.20g\n' % (xTrain[i,0], xTrain[i,1], yTrain[i]))
+					else :
+						print "CHECKPOINT-SAVER DATA DUMP ERROR"
+						sys.exit(1)
 				
 				with open(os.path.join(self.saveDirectory,'testSet.txt'), 'w') as outFile :
 					xTest  = self.system.networkTrainer.xTest
 					yTest  = self.system.networkTrainer.yTest
-					for i in xrange(len(xTest)) :
-						outFile.write('%30.20g %30.20g\n' % (xTest[i], yTest[i]))
-
+					if self.system.inputs == 1 :
+						for i in xrange(len(xTest)) :
+							outFile.write('%30.20g %30.20g\n' % (xTest[i], yTest[i]))
+					elif self.system.inputs == 2 :
+						for i in xrange(len(xTest)) :
+							outFile.write('%30.20g %30.20g %30.20g\n' % (xTest[i,0], xTest[i,1], yTest[i]))
+					else :
+						print "CHECKPOINT-SAVER DATA DUMP ERROR"
+						sys.exit(1)
+				"""
 			with open(self.metaName, "a") as outFile :			
 				#tf.summary.histogram(name, variable)       
 				outFile.write("%d %.15g %.15g\n" % (epoch, 
@@ -86,7 +103,7 @@ class CheckpointSaver :
 													testCost))			
 			return returnValue
 
-	def saveNetwork(self, session) :
+	def saveNetwork(self, session, epoch=None) :
 		returnValue = False
 		if self.save :
 			returnValue = True
@@ -95,11 +112,13 @@ class CheckpointSaver :
 			var 	= tf.trainable_variables()
 			
 			networkSaveFileName = 'network'
+			if epoch != None :
+				networkSaveFileName = 'network-%d' % epoch
 			networkFile = os.path.join(self.saveDirectory, networkSaveFileName)
 			#networkFile = os.path.join("/Users/morten/Documents/Master/TFPotential/C++Test", networkSaveFileName)
 			with open(networkFile, 'w') as saveFile :
 				inputs 	= self.system.inputs
-				"""
+		
 				nLayers = self.system.nLayers
 				nNodes 	= self.system.nNodes
 				outputs = self.system.outputs
@@ -108,25 +127,34 @@ class CheckpointSaver :
 													nNodes,
 													outputs))
 				
-				for layer in xrange(self.system.nLayers+2) :
-					w = sess.run([v.name for v in var if v.name == 'w%d:0' % layer])
+
+				for layer in xrange(self.system.nLayers+1) :
+					if layer == 0 :
+						w = sess.run([v.name for v in var if v.name == 'Variable:0'])
+					else :				
+						w = sess.run([v.name for v in var if v.name == 'Variable_%d:0' % layer])
 					b = sess.run([v.name for v in var if v.name == 'b%d:0' % layer])
 
 					iLimit = nNodes
 					jLimit = nNodes
 					if layer == 0 : iLimit = inputs
-					if layer == nLayers+1 : jLimit = outputs
-
+					if layer == nLayers : jLimit = outputs
+					
 					for i in xrange(iLimit) :
 						for j in xrange(jLimit) :
 							saveFile.write('%20.16f ' % w[0][i][j])
 						saveFile.write('\n')
-					for i in xrange(min(nNodes, jLimit)) :
-						saveFile.write('%20.16f ' % b[0][i])
-
-					saveFile.write('\n')
+					if layer != nLayers :
+						for i in xrange(min(nNodes, jLimit)) :
+							saveFile.write('%20.16f ' % b[0][i])
+					#saveFile.write('\n')
+				
+				# Ensure last bias is written
+				b = sess.run([v.name for v in var if v.name == 'b%d:0' % (nLayers+1)])
+				saveFile.write('%20.16f \n' % b[0][0])
+				
 				print("\n\nSaved network to %s\n" %networkFile)
-				"""
+
 		return returnValue			
 
 
@@ -147,15 +175,13 @@ class CheckpointSaver :
 		self.saveSkip = saveEach
 
 	def saveNetworkOutput(self, session, epoch) :
+		return
 		with open(os.path.join(self.saveDirectory, 'yTest.txt'), 'a') as outFile :
 			y_ = session.run(self.system.networkTrainer.prediction,
 								feed_dict ={self.system.networkTrainer.x : self.system.networkTrainer.xTest,
 											self.system.networkTrainer.y : self.system.networkTrainer.yTest}) 
 			outFile.write('%10d ' % epoch)
-			if len(y_) > 1000 :
-				skip = int(floor(len(y_)/1000))
-				
-			for i in xrange(0,len(y_),skip) :
+			for i in xrange(0,len(y_)) :
 				outFile.write('%30.20g ' % y_[i]);
 			outFile.write('\n');
 		
@@ -164,9 +190,7 @@ class CheckpointSaver :
 								feed_dict ={self.system.networkTrainer.x : self.system.networkTrainer.xTrain,
 											self.system.networkTrainer.y : self.system.networkTrainer.yTrain}) 
 			outFile.write('%10d ' % epoch)
-			if len(y_) > 1000 :
-				skip = int(floor(len(y_)/1000))
-			for i in xrange(0,len(y_),skip) :
+			for i in xrange(0,len(y_)) :
 				outFile.write('%30.20g ' % y_[i]);
 			outFile.write('\n');
 

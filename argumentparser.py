@@ -26,6 +26,8 @@ class ArgumentParser :
 		self.parser.add_argument('--type', help='Which activation functions to use',
 								 choices=['sigmoid','relu','relu-sigmoid'],
 								 default=False, nargs='?')
+		self.parser.add_argument('--file', help='Data file for use in training',
+								 default=None, nargs='?')
 		self.args = self.parser.parse_args()
 
 

@@ -1,6 +1,8 @@
 import sys
 import numpy as np
+from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
+
 
 
 class DataGenerator :
@@ -28,6 +30,51 @@ class DataGenerator :
 			xTest = xTest.reshape([nTest, 1])		
 			yTest = self.function(xTest)		
 			return x, y, xTest, yTest
+	
+	def SW(self, nTrain, nTest=None) :
+		
+		def V(r) :
+			return 10*7.04955627 * (0.6022245584 / (r*r*r*r) - 1.0 / r) * np.exp(1.0 / (r - 1.8))
+		
+		self.a = 1.8*0.45
+		self.b = 1.8
+		def temp(N) :
+			n = int(np.floor(np.sqrt(N)))
+			r1 = np.linspace(self.a, self.b-0.01, n)
+			r2 = np.linspace(self.a, self.b-0.01, n)
+			xTrain = np.zeros(shape=(n*n,2))
+		
+			for i in xrange(n) :
+				for j in xrange(n) :
+					ind = i*n+j
+					xTrain[ind,0] = r1[i]
+					xTrain[ind,1] = r2[j]
+			yTrain = np.zeros(shape=(n*n,1))
+			
+			for i in xrange(n*n) :
+				r1 = xTrain[i,0]
+				r2 = xTrain[i,1]
+			
+				yTrain[i] = V(r1) + V(r2)
+			return xTrain, yTrain, n
+		
+		
+		xTrain, yTrain, nn = temp(nTrain)
+		if nTest == None :
+			self.system.dataSize = nn
+			if self.system.batchSize > nn :
+				self.system.batchSize = nn
+			return xTrain, yTrain
+		else :
+			xTest, yTest, nn = temp(nTest)
+			self.system.testSize = nn
+			
+			fig = plt.figure()
+			ax = fig.add_subplot(111,projection='3d')
+			ax.scatter(xTest[:,0], xTest[:,1], yTest,'r.')
+			#plt.show()
+			
+			return xTrain, yTrain, xTest,yTest
 			
 			
 	def noise(self, nTrain, nTest=None) :
@@ -78,7 +125,42 @@ class DataGenerator :
 			return x, y
 		else :
 			return x, y, x, y
-
+	
+	def fileData(self, n, fileName) :
+		x = []
+		y = []
+		with open (fileName, 'r') as inFile :
+			numberOfLines = 0
+			for line in inFile : 
+				line = line.split()
+				x.append(float(line[0]))
+				y.append(float(line[1]))
+				numberOfLines += 1
+				
+		x = np.asarray(x).reshape([numberOfLines, 1])
+		y = np.asarray(y).reshape([numberOfLines, 1])
+		nn = numberOfLines
+		
+		xt = np.copy(x)
+		yt = np.copy(y)
+		
+		print xt.shape
+		if n < nn :
+			toRemove = nn - n
+			toRemove = np.random.choice(np.arange(len(xt)), toRemove, replace=False)
+			xt = np.delete(xt, toRemove)
+			yt = np.delete(yt, toRemove)
+			xt = xt.reshape([n,1])
+			yt = yt.reshape([n,1])
+				
+		self.system.testSize = nn
+		
+		print xt.shape
+		print x.shape	
+		self.system.dataSize = len(xt)
+		return xt, yt, x, y
+		
+			
 	def generateData(self, n, nTest=None) :
 		if self.generatorType == "function" :
 			return self.generateLinspace(n, nTest) 
@@ -86,6 +168,10 @@ class DataGenerator :
 			return self.VMCData(n, nTest)
 		elif self.generatorType == "random" or self.generatorType == "noise" :
 			return self.noise(n, nTest)
+		elif self.generatorType == "SW" :
+			return self.SW(n, nTest)
+		elif self.generatorType == "file" :
+			return self.fileData(n, self.system.argumentParser().file)
 		else :
 			raise NameError("Invalid training data type '%s' in DataGenerator." % self.generatorType)
 

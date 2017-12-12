@@ -34,19 +34,37 @@ class TFPotential :
 		self.saver 			= ckps.CheckpointSaver(self, 
 												   self.argumentParser().save)
 		self.networkTrainer = nt.NetworkTrainer(self, self.saver)
-		self.function		= lambda r: 1/r**6 * (1/r**6 - 1)
-		#self.function		= lambda r: 0.5*r
-		#self.function		= lambda r: r/r*np.random.normal(0,1)# +np.sin(7.0*np.pi*r)
-		self.dataGenerator	= gen.DataGenerator(0.93, 1.6, self)
+
+
+		self.function		= lambda r: r/r*np.random.normal(0,1)# +np.sin(7.0*np.pi*r)
+		self.function		= lambda r: 1/r**12 - 1/r**6
+		self.function		= lambda r: 4*(1.0/(r**12) - 1.0/(r**6)) - 4*(1.0/(2.5**12) - 1.0/(2.5**6))
+
+		
+		self.dataGenerator	= gen.DataGenerator(0.87, 2.5, self)
 		self.dataGenerator.setFunction(self.function)
-		#self.dataGenerator.setGeneratorType("function")
+		
+		if not self.argumentParser().file == None :
+			self.dataGenerator.setGeneratorType("file");
+		else :
+			self.dataGenerator.setGeneratorType("function")
 		#self.dataGenerator.setGeneratorType("VMC")
-		self.dataGenerator.setGeneratorType("noise")
+		#self.dataGenerator.setGeneratorType("noise")
+		
+		
+		
+		
+		self.dataSize  		= int(9987)
+		
+		
+		
+		
+		
+		
 		self.numberOfEpochs = int(100)
-		self.dataSize  		= int(1e5)
-		self.batchSize		= int(200)
-		self.testSize		= int(1e3)
-		self.testInterval	= 1
+		self.batchSize		= int(500)
+		self.testSize		= self.dataSize #int(600)
+		self.testInterval	= 5000
 		self.printer		= printer.Printer(self)
 		self.printer.printSetup()
 		self.plotter 		= plotter.Plotter(self)
@@ -86,7 +104,10 @@ class TFPotential :
 
 if __name__ == "__main__" :
 	tfpot = TFPotential()
-	#tfpot.setNetworkType('relu')
+	#tfpot.inputs = 2
+	#tfpot.dataGenerator.a = 0.45
+	#tfpot.dataGenerator.b = 1.8
+	#tfpot.dataGenerator.generatorType = "SW"
 	tfpot.train(tfpot.argumentParser().epochs)
 	
 	
